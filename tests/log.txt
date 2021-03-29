@@ -1,0 +1,2 @@
+Samples: 30080, Min: -27017, Max: 14882, DC: -108.71, RMSLev[dB]: -25.328, ActLev[dB]: -23.924, %Active:  72.374, Gain[]:   0.787, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 30080, Min: -21272, Max: 11717, DC:  -85.40, RMSLev[dB]: -27.406, ActLev[dB]: -26.020, %Active:  72.676, RMSPkF[dB]:  23.653, ActPkF[dB]:  22.267, 	d:\Audio_Database\Reference_norm\5105-28241-0007_norm.wav

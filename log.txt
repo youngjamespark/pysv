@@ -1,0 +1,44 @@
+Samples: 35680, Min: -17021, Max: 12090, DC:    6.40, RMSLev[dB]: -27.457, ActLev[dB]: -25.185, %Active:  59.259, RMSPkF[dB]:  21.768, ActPkF[dB]:  19.496, 	d:\Audio_Database\Reference_norm\4970-29093-0016.wav
+Samples: 35680, Min: -17021, Max: 12090, DC:    6.40, RMSLev[dB]: -27.457, ActLev[dB]: -25.185, %Active:  59.259, Gain[]:   0.323, 	d:\Audio_Database\Reference_norm\4970-29093-0016.wav
+Samples: 35680, Min: -5498, Max:  3905, DC:    2.17, RMSLev[dB]: -37.276, ActLev[dB]: -34.991, %Active:  59.086, RMSPkF[dB]:  21.771, ActPkF[dB]:  19.486, 	d:\Audio_Database\Reference_norm\4970-29093-0016_norm.wav
+Samples: 30080, Min: -27017, Max: 14882, DC: -108.71, RMSLev[dB]: -25.328, ActLev[dB]: -23.924, %Active:  72.374, RMSPkF[dB]:  23.652, ActPkF[dB]:  22.247, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 35680, Min: -17021, Max: 12090, DC:    6.40, RMSLev[dB]: -27.457, ActLev[dB]: -25.185, %Active:  59.259, RMSPkF[dB]:  21.768, ActPkF[dB]:  19.496, 	d:\Audio_Database\Reference_norm\4970-29093-0016.wav
+Samples: 35680, Min: -17021, Max: 12090, DC:    6.40, RMSLev[dB]: -27.457, ActLev[dB]: -25.185, %Active:  59.259, Gain[]:   0.323, 	d:\Audio_Database\Reference_norm\4970-29093-0016.wav
+Samples: 35680, Min: -5498, Max:  3905, DC:    2.17, RMSLev[dB]: -37.276, ActLev[dB]: -34.991, %Active:  59.086, RMSPkF[dB]:  21.771, ActPkF[dB]:  19.486, 	d:\Audio_Database\Reference_norm\4970-29093-0016_norm.wav
+Samples: 30080, Min: -27017, Max: 14882, DC: -108.71, RMSLev[dB]: -25.328, ActLev[dB]: -23.924, %Active:  72.374, RMSPkF[dB]:  23.652, ActPkF[dB]:  22.247, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 35680, Min: -17021, Max: 12090, DC:    6.40, RMSLev[dB]: -27.457, ActLev[dB]: -25.185, %Active:  59.259, RMSPkF[dB]:  21.768, ActPkF[dB]:  19.496, 	d:\Audio_Database\Reference_norm\4970-29093-0016.wav
+Samples: 35680, Min: -17021, Max: 12090, DC:    6.40, RMSLev[dB]: -27.457, ActLev[dB]: -25.185, %Active:  59.259, Gain[]:   0.323, 	d:\Audio_Database\Reference_norm\4970-29093-0016.wav
+Samples: 35680, Min: -5498, Max:  3905, DC:    2.17, RMSLev[dB]: -37.276, ActLev[dB]: -34.991, %Active:  59.086, RMSPkF[dB]:  21.771, ActPkF[dB]:  19.486, 	d:\Audio_Database\Reference_norm\4970-29093-0016_norm.wav
+Samples: 30080, Min: -27017, Max: 14882, DC: -108.71, RMSLev[dB]: -25.328, ActLev[dB]: -23.924, %Active:  72.374, RMSPkF[dB]:  23.652, ActPkF[dB]:  22.247, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 30080, Min: -27017, Max: 14882, DC: -108.71, RMSLev[dB]: -25.328, ActLev[dB]: -23.924, %Active:  72.374, Gain[]:   0.787, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 30080, Min: -21272, Max: 11717, DC:  -85.40, RMSLev[dB]: -27.406, ActLev[dB]: -26.020, %Active:  72.676, RMSPkF[dB]:  23.653, ActPkF[dB]:  22.267, 	d:\Audio_Database\Reference_norm\5105-28241-0007_norm.wav
+Samples: 35680, Min: -17021, Max: 12090, DC:    6.40, RMSLev[dB]: -27.457, ActLev[dB]: -25.185, %Active:  59.259, RMSPkF[dB]:  21.768, ActPkF[dB]:  19.496, 	d:\Audio_Database\Reference_norm\4970-29093-0016.wav
+Samples: 35680, Min: -17021, Max: 12090, DC:    6.40, RMSLev[dB]: -27.457, ActLev[dB]: -25.185, %Active:  59.259, Gain[]:   0.323, 	d:\Audio_Database\Reference_norm\4970-29093-0016.wav
+Samples: 35680, Min: -5498, Max:  3905, DC:    2.17, RMSLev[dB]: -37.276, ActLev[dB]: -34.991, %Active:  59.086, RMSPkF[dB]:  21.771, ActPkF[dB]:  19.486, 	d:\Audio_Database\Reference_norm\4970-29093-0016_norm.wav
+Samples: 30080, Min: -27017, Max: 14882, DC: -108.71, RMSLev[dB]: -25.328, ActLev[dB]: -23.924, %Active:  72.374, RMSPkF[dB]:  23.652, ActPkF[dB]:  22.247, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 30080, Min: -27017, Max: 14882, DC: -108.71, RMSLev[dB]: -25.328, ActLev[dB]: -23.924, %Active:  72.374, Gain[]:   0.787, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 30080, Min: -21272, Max: 11717, DC:  -85.40, RMSLev[dB]: -27.406, ActLev[dB]: -26.020, %Active:  72.676, RMSPkF[dB]:  23.653, ActPkF[dB]:  22.267, 	d:\Audio_Database\Reference_norm\5105-28241-0007_norm.wav
+Samples: 35680, Min: -17021, Max: 12090, DC:    6.40, RMSLev[dB]: -27.457, ActLev[dB]: -25.185, %Active:  59.259, RMSPkF[dB]:  21.768, ActPkF[dB]:  19.496, 	d:\Audio_Database\Reference_norm\4970-29093-0016.wav
+Samples: 35680, Min: -17021, Max: 12090, DC:    6.40, RMSLev[dB]: -27.457, ActLev[dB]: -25.185, %Active:  59.259, Gain[]:   0.323, 	d:\Audio_Database\Reference_norm\4970-29093-0016.wav
+Samples: 35680, Min: -5498, Max:  3905, DC:    2.17, RMSLev[dB]: -37.276, ActLev[dB]: -34.991, %Active:  59.086, RMSPkF[dB]:  21.771, ActPkF[dB]:  19.486, 	d:\Audio_Database\Reference_norm\4970-29093-0016_norm.wav
+Samples: 30080, Min: -27017, Max: 14882, DC: -108.71, RMSLev[dB]: -25.328, ActLev[dB]: -23.924, %Active:  72.374, RMSPkF[dB]:  23.652, ActPkF[dB]:  22.247, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 30080, Min: -27017, Max: 14882, DC: -108.71, RMSLev[dB]: -25.328, ActLev[dB]: -23.924, %Active:  72.374, Gain[]:   0.787, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 30080, Min: -21272, Max: 11717, DC:  -85.40, RMSLev[dB]: -27.406, ActLev[dB]: -26.020, %Active:  72.676, RMSPkF[dB]:  23.653, ActPkF[dB]:  22.267, 	d:\Audio_Database\Reference_norm\5105-28241-0007_norm.wav
+Samples: 35680, Min: -17021, Max: 12090, DC:    6.40, RMSLev[dB]: -27.457, ActLev[dB]: -25.185, %Active:  59.259, RMSPkF[dB]:  21.768, ActPkF[dB]:  19.496, 	d:\Audio_Database\Reference_norm\4970-29093-0016.wav
+Samples: 35680, Min: -17021, Max: 12090, DC:    6.40, RMSLev[dB]: -27.457, ActLev[dB]: -25.185, %Active:  59.259, Gain[]:   0.323, 	d:\Audio_Database\Reference_norm\4970-29093-0016.wav
+Samples: 35680, Min: -5498, Max:  3905, DC:    2.17, RMSLev[dB]: -37.276, ActLev[dB]: -34.991, %Active:  59.086, RMSPkF[dB]:  21.771, ActPkF[dB]:  19.486, 	d:\Audio_Database\Reference_norm\4970-29093-0016_norm.wav
+Samples: 30080, Min: -27017, Max: 14882, DC: -108.71, RMSLev[dB]: -25.328, ActLev[dB]: -23.924, %Active:  72.374, RMSPkF[dB]:  23.652, ActPkF[dB]:  22.247, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 30080, Min: -27017, Max: 14882, DC: -108.71, RMSLev[dB]: -25.328, ActLev[dB]: -23.924, %Active:  72.374, Gain[]:   0.787, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 30080, Min: -21272, Max: 11717, DC:  -85.40, RMSLev[dB]: -27.406, ActLev[dB]: -26.020, %Active:  72.676, RMSPkF[dB]:  23.653, ActPkF[dB]:  22.267, 	d:\Audio_Database\Reference_norm\5105-28241-0007_norm.wav
+Samples: 35680, Min: -17021, Max: 12090, DC:    6.40, RMSLev[dB]: -27.457, ActLev[dB]: -25.185, %Active:  59.259, RMSPkF[dB]:  21.768, ActPkF[dB]:  19.496, 	d:\Audio_Database\Reference_norm\4970-29093-0016.wav
+Samples: 35680, Min: -17021, Max: 12090, DC:    6.40, RMSLev[dB]: -27.457, ActLev[dB]: -25.185, %Active:  59.259, Gain[]:   0.323, 	d:\Audio_Database\Reference_norm\4970-29093-0016.wav
+Samples: 35680, Min: -5498, Max:  3905, DC:    2.17, RMSLev[dB]: -37.276, ActLev[dB]: -34.991, %Active:  59.086, RMSPkF[dB]:  21.771, ActPkF[dB]:  19.486, 	d:\Audio_Database\Reference_norm\4970-29093-0016_norm.wav
+Samples: 30080, Min: -27017, Max: 14882, DC: -108.71, RMSLev[dB]: -25.328, ActLev[dB]: -23.924, %Active:  72.374, RMSPkF[dB]:  23.652, ActPkF[dB]:  22.247, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 30080, Min: -27017, Max: 14882, DC: -108.71, RMSLev[dB]: -25.328, ActLev[dB]: -23.924, %Active:  72.374, Gain[]:   0.787, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 30080, Min: -21272, Max: 11717, DC:  -85.40, RMSLev[dB]: -27.406, ActLev[dB]: -26.020, %Active:  72.676, RMSPkF[dB]:  23.653, ActPkF[dB]:  22.267, 	d:\Audio_Database\Reference_norm\5105-28241-0007_norm.wav
+Samples: 30080, Min: -21272, Max: 11717, DC:  -85.40, RMSLev[dB]: -27.406, ActLev[dB]: -26.020, %Active:  72.676, Gain[]:   1.002, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 30080, Min: -21319, Max: 11743, DC:  -85.50, RMSLev[dB]: -27.387, ActLev[dB]: -26.001, %Active:  72.676, RMSPkF[dB]:  23.654, ActPkF[dB]:  22.268, 	d:\Audio_Database\Reference_norm\5105-28241-0007_norm.wav
+Samples: 30080, Min: -21272, Max: 11717, DC:  -85.40, RMSLev[dB]: -27.406, ActLev[dB]: -26.020, %Active:  72.676, Gain[]:   1.002, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 30080, Min: -21319, Max: 11743, DC:  -85.50, RMSLev[dB]: -27.387, ActLev[dB]: -26.001, %Active:  72.676, RMSPkF[dB]:  23.654, ActPkF[dB]:  22.268, 	d:\Audio_Database\Reference_norm\5105-28241-0007_norm.wav
+Samples: 30080, Min: -21272, Max: 11717, DC:  -85.40, RMSLev[dB]: -27.406, ActLev[dB]: -26.020, %Active:  72.676, Gain[]:   1.002, 	d:\Audio_Database\Reference_norm\5105-28241-0007.wav
+Samples: 30080, Min: -21319, Max: 11743, DC:  -85.50, RMSLev[dB]: -27.387, ActLev[dB]: -26.001, %Active:  72.676, RMSPkF[dB]:  23.654, ActPkF[dB]:  22.268, 	d:\Audio_Database\Reference_norm\5105-28241-0007_norm.wav
