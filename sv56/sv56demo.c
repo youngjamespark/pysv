@@ -447,7 +447,7 @@ int sv56demo(char* FileIn, char* FileOut, double targetdB)
     char quiet = 0, use_active_level = 1, long_summary = 1;
     short buffer[4096];
     float Buf[4096];
-    long NrSat = 0, start_byte, bitno = 16;
+    long NrSat = 0, bitno = 16;
     double sf = 16000, factor;
     double ActiveLeveldB, DesiredSpeechLeveldB;
     static char funny[5] = { '/', '-', '\\', '|', '-' };
@@ -464,8 +464,6 @@ int sv56demo(char* FileIn, char* FileOut, double targetdB)
     }
 
     /* ......... SOME INITIALIZATIONS ......... */
-    //start_byte = --N1;
-    //start_byte *= N * sizeof(short);
 
     /* Check if is to process the whole file */
     //if (N2 == 0) {
