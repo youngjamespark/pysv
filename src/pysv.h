@@ -27,6 +27,6 @@ typedef struct {
 
 pysv_state calculate(char *FileIn);
 pysv_state normalize(char *FileIn, char *FileOut, double targetdB);
-int samplerate_change(char *FileIn, char *FileOut, int out_samplerate);
+void samplerate_change(char *FileIn, char *FileOut, int out_samplerate);
 
 #endif // __PYSV_MODULE_H__
