@@ -353,10 +353,9 @@ int actlevel(char* FileIn, SVP56_state* sv_state)
 {
     /* Parameters for operation */
     double Overflow;              /* Max.positive value for AD_resolution bits */
-    long N = DEF_BLK_LEN, N1 = 1, N2 = 0, N2_ori, i, l;
+    long N = DEF_BLK_LEN, N1 = 1, N2 = 0, i, l;
 
     wav_header header;
-    short dummy;
     int header_offset = 0;
 
     /* Intermediate storage variables for speech voltmeter */
@@ -373,7 +372,7 @@ int actlevel(char* FileIn, SVP56_state* sv_state)
     /* Other variables */
     short buffer[4096];
     float Buf[4096];
-    long start_byte, bitno = 16;
+    long bitno = 16;
     double sf = 16000;            /* Hz */
     double ActiveLeveldB, level = 0, gain = 0;
     char use_active_level = 1;
@@ -386,9 +385,6 @@ int actlevel(char* FileIn, SVP56_state* sv_state)
     }
 
     /* ......... SOME INITIALIZATIONS ......... */
-    //start_byte = --N1;
-    //start_byte *= N * sizeof(short);
-    //N2_ori = N2;
 
     /* Overflow (saturation) point */
     Overflow = pow((double)2.0, (double)(bitno - 1));
