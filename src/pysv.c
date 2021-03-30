@@ -74,7 +74,7 @@ pysv_state normalize(char *FileIn, char *FileOut, double targetdB)
     return state;
 }
 
-int samplerate_change(char *FileIn, char *FileOut, int out_samplerate)
+void samplerate_change(char *FileIn, char *FileOut, int out_samplerate)
 {
     ssrc(FileIn, FileOut, out_samplerate);
 }
