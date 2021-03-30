@@ -24,7 +24,7 @@ typedef struct wav_header {
     // uint8_t bytes[];             // Remainder of wave file is bytes
 } wav_header;
 
-int wav_header_read(FILE* fp, wav_header* header);
+int wav_header_read(char* FileIn, wav_header* header);
 int actlevel(char* FileIn, SVP56_state* sv_state);
 int sv56demo(char* FileIn, char* FileOut, double targetdB);
 int ssrc(char* sfn, char* dfn, int dfrq);
