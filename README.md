@@ -11,7 +11,7 @@
 # Build and Install
 $ python setup.py install
 
-# Example for narrow band and wide band
+# Example for narrow band and wide band speech quality estimation
     - test.py
         - only working on *.wav
         - when using it, please note that the sampling rate (frequency) should be 16000 or 8000. 
