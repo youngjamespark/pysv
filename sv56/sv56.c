@@ -34,7 +34,7 @@ int wav_header_read(char* FileIn, wav_header* header)
         return -1;
     }
 
-    // chunk size = 16
+    // chunk size = 16 or 18
     fread(&header->fmt_chunk_size, sizeof(int), 1, Fi);
 
     // audio format = 1
@@ -71,6 +71,7 @@ int wav_header_read(char* FileIn, wav_header* header)
     // bit depth = 16
     fread(&header->bit_depth, sizeof(short), 1, Fi);
 
+    // two bytes chunk
     if (header->fmt_chunk_size == 0x12)
         fseek(Fi, 2, SEEK_CUR);
 
