@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "sv56.h"
+#include <string.h>
 
 int wav_header_read(char* FileIn, wav_header* header)
 {
