@@ -205,6 +205,7 @@
  10.Dec.94 v1.0 Created. <simao>
  -------------------------------------------------------------------------
 */
+#ifdef SV56DEMO
 void display_usage() {
     printf("SV56DEMO.C: Version 3.5 of 02.Feb.2010 \n\n");
     printf("  Program to level-equalize a speech file \"NdB\" dBs below\n");
@@ -251,7 +252,7 @@ void display_usage() {
     /* Quit program */
     exit(-128);
 }
-
+#endif
 /* .................... End of display_usage() ........................... */
 
 
@@ -425,6 +426,62 @@ void print_p56_short_summary(FILE* out, char* file, SVP56_state state, double al
    ***                                                                    ***
    **************************************************************************
 */
+
+#if SV56DEMO
+int main(int argc, char* argv[])
+{
+    double NdB = -26;             /* dBov */
+    char FileIn[MAX_STRLEN], FileOut[MAX_STRLEN];
+    SVP56_state sv_state;
+
+    /* ......... GET PARAMETERS ......... */
+
+/* Getting options */
+    if (argc < 2)
+        display_usage();
+    else {
+        while (argc > 1 && argv[1][0] == '-')
+            if (strcmp(argv[1], "-lev") == 0) {
+                /* Change default level normalization */
+                NdB = atof(argv[2]);
+
+                /* Update argc/argv to next valid option/argument */
+                argv += 2;
+                argc -= 2;
+            }
+    }
+
+
+    /* Reads parameters for processing */
+    GET_PAR_S(1, "_Input File: ........................... ", FileIn);
+    GET_PAR_S(2, "_Output File: .......................... ", FileOut);
+    //FIND_PAR_L(3, "_Block Length: ......................... ", N, N);
+    //FIND_PAR_L(4, "_Start Block: .......................... ", N1, N1);
+    //FIND_PAR_L(5, "_No. of Blocks: ........................ ", N2, N2);
+    //FIND_PAR_D(6, "_dBs relative to system overload: ...... ", NdB, NdB);
+    //FIND_PAR_D(7, "_Sampling Frequency: ................... ", sf, sf);
+    //FIND_PAR_L(8, "_A/D resolution: ....................... ", bitno, bitno);
+
+    sv56demo(FileIn, FileOut, NdB);
+
+    actlevel(FileIn, &sv_state);
+
+    actlevel(FileOut, &sv_state);
+    fprintf(stderr, "FIle: \t%s\n", FileOut);
+    fprintf(stderr, "Samples: %5ld\n", sv_state.n);
+    fprintf(stderr, "Min: %5.0f\n", sv_state.maxN);
+    fprintf(stderr, "Max: %5.0f\n", sv_state.maxP);
+    fprintf(stderr, "DC: %7.2f\n", sv_state.DClevel);
+    fprintf(stderr, "RMSLev[dB]: %7.3f\n", sv_state.rmsdB);
+    fprintf(stderr, "ActLev[dB]: %7.3f\n", sv_state.ActiveSpeechLevel);
+    fprintf(stderr, "%%Active: %7.3f\n", sv_state.ActivityFactor);
+    fprintf(stderr, "RMSPkF[dB]: %7.3f\n", sv_state.rmsPkF);
+    fprintf(stderr, "ActPkF[dB]: %7.3f\n", sv_state.ActPkF);
+    fprintf(stderr, "Gain[]: %7.3f\n", sv_state.Gain);
+
+}
+#endif
+
 int sv56demo(char* FileIn, char* FileOut, double targetdB)
 {
     /* DECLARATIONS */
@@ -455,6 +512,7 @@ int sv56demo(char* FileIn, char* FileOut, double targetdB)
 
     wav_header header;
     int header_offset = 0;
+    int name_len = 0;
 
     char FileLog[256] = "log.txt";
 
@@ -480,8 +538,28 @@ int sv56demo(char* FileIn, char* FileOut, double targetdB)
     /* reset variables for speech level measurements */
     init_speech_voltmeter(&state, sf);
 
+    /* check file extension */
     /* Read wave header and offset */
-    header_offset = wav_header_read(FileIn, &header);
+    name_len = strlen(FileIn);
+    if (name_len > 4)
+    {
+        if (strcmp(FileIn + name_len - 4, ".wav") == 0)
+            header_offset = wav_header_read(FileIn, &header);
+        if (strcmp(FileIn + name_len - 4, ".WAV") == 0)
+            header_offset = wav_header_read(FileIn, &header);
+        if (strcmp(FileIn + name_len - 4, ".PCM") == 0) {
+            header_offset = 0;
+            struct stat st;
+            stat(FileIn, &st);
+            header.data_bytes = st.st_size;
+        }
+        if (strcmp(FileIn + name_len - 4, ".pcm") == 0) {
+            header_offset = 0;
+            struct stat st;
+            stat(FileIn, &st);
+            header.data_bytes = st.st_size;
+        }
+    }
 
     /*
      * ......... FILE PREPARATION .........
@@ -497,14 +575,15 @@ int sv56demo(char* FileIn, char* FileOut, double targetdB)
     /* Creates output file */
     if ((Fo = fopen(FileOut, WB)) == NULL)
         KILL(FileOut, 3);
-
-    if ((l = fread(buffer, sizeof(char), header_offset, Fi)) != header_offset) {
-        fprintf(out, "Error in reading wave header.\n");
-        return -1;
-    }
-    if ((l = fwrite(buffer, sizeof(char), header_offset, Fo)) != header_offset) {
-        fprintf(out, "Error in writing wave header.\n");
-        return -1;
+    if (header_offset > 0) {
+        if ((l = fread(buffer, sizeof(char), header_offset, Fi)) != header_offset) {
+            fprintf(out, "Error in reading wave header.\n");
+            return -1;
+        }
+        if ((l = fwrite(buffer, sizeof(char), header_offset, Fo)) != header_offset) {
+            fprintf(out, "Error in writing wave header.\n");
+            return -1;
+        }
     }
 
     /* Initialize number of blocks to all samples */
@@ -606,12 +685,14 @@ int sv56demo(char* FileIn, char* FileOut, double targetdB)
     else {
         KILL(FileIn, 5);
     }
-    while (1) {
-        if ((l = fread(buffer, sizeof(char), N, Fi)) > 0) {
-            fwrite(buffer, sizeof(char), l, Fo);
+    if (header_offset > 0) {
+        while (1) {
+            if ((l = fread(buffer, sizeof(char), N, Fi)) > 0) {
+                fwrite(buffer, sizeof(char), l, Fo);
+            }
+            else
+                break;
         }
-        else
-            break;
     }
 
 
