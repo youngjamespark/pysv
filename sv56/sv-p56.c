@@ -230,8 +230,8 @@ void init_speech_voltmeter(SVP56_state* state, double sampl_freq) {
 
 
     /* First initializations */
-    state->f = sampl_freq;
-    I = floor(H * state->f + 0.5);
+    state->f = (float) sampl_freq;
+    I = (long) floor(H * state->f + 0.5);
 
     /* Inicialization of threshold vector */
     for (x = 0.5, j = 1; j <= THRES_NO; j++, x /= 2.0)
