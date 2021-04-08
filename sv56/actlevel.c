@@ -164,6 +164,74 @@
 #define DEF_BLK_LEN 256         /* samples per block */
 #define MIN_LOG_OFFSET 1.0e-20  /* To avoid sigularity with log(0.0) */
 
+/*
+  ============================================================================
+
+        void display_usage (void)
+        ~~~~~~~~~~~~~~~~~~
+
+        Display usage information and quit program.
+
+        Parameter:
+        ~~~~~~~~~~
+        None.
+
+        Returns
+        ~~~~~~~
+        To calling program, nothing; to calling environment, returns OK
+        (1 in VAX/VMS or 0, otherwise).
+
+        Original author
+        ~~~~~~~~~~~~~~~
+        simao@ctd.comsat.com
+
+        Log of changes
+        ~~~~~~~~~~~~~~
+        01.Feb.94	v1.0	Creation.
+
+  ============================================================================
+*/
+#ifdef ACTLEVEL
+void display_usage() {
+    printf("ACTLEVEL.C - Version 2.0 of 01/Feb/1995 \n");
+    printf(" Calculate the active speech level of a file, relative to the\n");
+    printf(" system overload point [dBov], using the P.56 algorithm.\n");
+    printf(" Reports positive and negative peaks, RMS and active level, \n");
+    printf(" activity factor [%%], and long-term and active peak factors \n");
+    printf(" for the file\n");
+    printf("\n");
+    printf(" Usage:\n");
+    printf("  $ actlevel [-options] file [file ...]\n");
+    printf(" where:\n");
+    printf("  file ....... is the input file(s) to be measured\n");
+    printf(" Options: \n");
+    printf("  -blk len  .. is the block size in number of samples;\n");
+    printf("               this parameter is optional, and the default is  \n");
+    printf("               block size of 256 samples;\n");
+    printf("  -start sb .. define `sb' as the first block to be measured \n");
+    printf("               [default: first block of the file] \n");
+    printf("  -end eb .... define `eb' as the last block to be measured\n");
+    printf("  -n nb ...... define `nb' as the number of blocks to be measured \n");
+    printf("               [default: whole file]\n");
+    printf("  -sf f ...... sets the sampling rate to `f' Hz [default: 16000Hz]\n");
+    printf("  -bits n .... sets the digital system resolution (AD,DA systems) \n");
+    printf("               to `n' bits [default: 16 bits]\n");
+    printf("  -lev ndB ... CALCULATES the gain necessary to equalize the\n");
+    printf("               *active* level of the input file(s) to ndB.\n");
+    printf("               The program will NOT level-equalize the file.\n");
+    printf("  -rms ....... when -lev is selected, reports the gain necessary\n");
+    printf("               to normalizes to the long term level, instead of the\n");
+    printf("               active speech level. Does NOT change the file(s).\n");
+    printf("  -log file ... log statistics into file rather than stdout\n");
+    printf("  -q ......... quiet operation; don't print progress flag, results\n");
+    printf("               are printed all in one line.\n");
+
+    /* Quit program */
+    exit(-128);
+}
+#endif // ACTLEVEL
+/* ....................... End of display_usage() .......................... */
+
 
 /*
   ============================================================================
@@ -349,6 +417,186 @@ void print_act_short_summary(FILE* out, char* file, SVP56_state state, double al
    **************************************************************************
 */
 
+#if ACTLEVEL
+
+int main(int argc, char* argv[])
+{
+    /* Parameters for operation */
+    long N = DEF_BLK_LEN, N1 = 1, N2 = 0;
+
+    /* Intermediate storage variables for speech voltmeter */
+    SVP56_state sv_state;
+#ifdef LOCAL_PRINT
+    double abs_max_dB;
+#endif
+
+    /* File-related variables */
+    char FileIn[150];
+    FILE* out = stdout;           /* where to print the statistical results */
+#ifdef VMS
+    char mrs[15];
+#endif
+
+    /* Other variables */
+    long bitno = 16;
+    double sf = 16000;            /* Hz */
+    double level = 0, gain = 0;
+    static char funny[] = "|/-\\|/-\\", funny_size = sizeof(funny), quiet = 0;
+#ifdef LOCAL_PRINT
+    static char unity[5] = "dBov";
+#endif
+    char use_active_level = 1;
+    //pysv_state state;
+
+    if (argc < 2)
+        display_usage();
+    else {
+        while (argc > 1 && argv[1][0] == '-')
+            if (strcmp(argv[1], "-sf") == 0) {
+                /* Change default sampling frequency */
+                sf = atof(argv[2]);
+
+                /* Update argc/argv to next valid option/argument */
+                argv += 2;
+                argc -= 2;
+            }
+            else if (strcmp(argv[1], "-lev") == 0) {
+                /* Set a desired level */
+                level = atof(argv[2]);
+
+                /* Update argc/argv to next valid option/argument */
+                argv += 2;
+                argc -= 2;
+            }
+            else if (strcmp(argv[1], "-rms") == 0) {
+                /* Use the RMS level to normalize instead of the active level */
+                use_active_level = 0;
+
+                /* Update argc/argv to next valid option/argument */
+                argv++;
+                argc--;
+            }
+            else if (strcmp(argv[1], "-bits") == 0) {
+                /* Change default sampling frequency */
+                bitno = atoi(argv[2]);
+
+                /* Update argc/argv to next valid option/argument */
+                argv += 2;
+                argc -= 2;
+            }
+            else if (strcmp(argv[1], "-blk") == 0) {
+                /* Change default sampling frequency */
+                N = atoi(argv[2]);
+
+                /* Update argc/argv to next valid option/argument */
+                argv += 2;
+                argc -= 2;
+            }
+            else if (strcmp(argv[1], "-start") == 0) {
+                /* Change default sampling frequency */
+                N1 = atoi(argv[2]);
+
+                /* Update argc/argv to next valid option/argument */
+                argv += 2;
+                argc -= 2;
+            }
+            else if (strcmp(argv[1], "-n") == 0) {
+                /* Change default sampling frequency */
+                N2 = atoi(argv[2]);
+
+                /* Update argc/argv to next valid option/argument */
+                argv += 2;
+                argc -= 2;
+            }
+            else if (strcmp(argv[1], "-end") == 0) {
+                /* Change number of blocks based on the last block */
+                N2 = atol(argv[2]) - N1 + 1;
+
+                /* Update argc/argv to next valid option/argument */
+                argv += 2;
+                argc -= 2;
+            }
+            else if (strcmp(argv[1], "-log") == 0) {
+                /* Log statistics into a file */
+                if ((out = fopen(argv[2], WT)) == NULL)
+                    KILL(argv[2], 2);
+                else
+                    fprintf(stderr, "Statistics will be logged in %s\n", argv[2]);
+
+                /* Update argc/argv to next valid option/argument */
+                argv += 2;
+                argc -= 2;
+            }
+            else if (strcmp(argv[1], "-q") == 0) {
+                /* Don't print progress indicator */
+                quiet = 1;
+
+                /* Move argv over the option to the next argument */
+                argv++;
+                argc--;
+            }
+            else if (strcmp(argv[1], "--") == 0) {
+                /* No more options: */
+                /* Move argv over the option to the next argument and quit loop */
+                argv++;
+                argc--;
+                break;
+            }
+            else if (strcmp(argv[1], "-?") == 0 || strstr(argv[1], "-help")) {
+                /* Print help */
+                display_usage();
+            }
+            else {
+                fprintf(stderr, "ERROR! Invalid option \"%s\" in command line\n\n", argv[1]);
+                display_usage();
+            }
+    }
+
+    /* Get new file name and update argument line pointer/counter */
+    while (argc > 1) {
+        /* Get new file name and update argument line pointer/counter */
+        printf("%s\n", argv[1]);
+        strncpy(FileIn, argv[1], sizeof(FileIn));
+        argv++;
+        argc--;
+    }
+
+    actlevel(FileIn, &sv_state);
+
+    fprintf(stderr, "FIle: \t%s\n", FileIn);
+    fprintf(stderr, "Samples: %5ld\n", sv_state.n);
+    fprintf(stderr, "Min: %5.0f\n", sv_state.maxN);
+    fprintf(stderr, "Max: %5.0f\n", sv_state.maxP);
+    fprintf(stderr, "DC: %7.2f\n", sv_state.DClevel);
+    fprintf(stderr, "RMSLev[dB]: %7.3f\n", sv_state.rmsdB);
+    fprintf(stderr, "ActLev[dB]: %7.3f\n", sv_state.ActiveSpeechLevel);
+    fprintf(stderr, "%%Active: %7.3f\n", sv_state.ActivityFactor);
+    fprintf(stderr, "RMSPkF[dB]: %7.3f\n", sv_state.rmsPkF);
+    fprintf(stderr, "ActPkF[dB]: %7.3f\n", sv_state.ActPkF);
+    fprintf(stderr, "Gain[]: %7.3f\n", sv_state.Gain);
+
+    //state.f = sv_state.f;
+    //state.n = sv_state.n;
+    //state.s = sv_state.s;
+    //state.sq = sv_state.sq;
+    //state.p = sv_state.p;
+    //state.q = sv_state.q;
+    //state.max = sv_state.max;
+    //state.refdB = sv_state.refdB;
+    //state.rmsdB = sv_state.rmsdB;
+    //state.maxN = sv_state.maxN;
+    //state.maxP = sv_state.maxP;
+    //state.DClevel = sv_state.DClevel;
+    //state.ActivityFactor = sv_state.ActivityFactor;
+    //state.ActiveSpeechLevel = sv_state.ActiveSpeechLevel;
+    //state.rmsPkF = sv_state.rmsPkF;
+    //state.ActPkF = sv_state.ActPkF;
+
+    //return state;
+    return 0;
+}
+#endif
+
 int actlevel(char* FileIn, SVP56_state* sv_state)
 {
     /* Parameters for operation */
@@ -376,6 +624,7 @@ int actlevel(char* FileIn, SVP56_state* sv_state)
     double sf = 16000;            /* Hz */
     double ActiveLeveldB, level = 0, gain = 0;
     char use_active_level = 1;
+    int name_len;
 
     char FileLog[256] = "log.txt";
 
@@ -385,6 +634,9 @@ int actlevel(char* FileIn, SVP56_state* sv_state)
     }
 
     /* ......... SOME INITIALIZATIONS ......... */
+    //start_byte = --N1;
+    //start_byte *= N * sizeof(short);
+    //N2_ori = N2;
 
     /* Overflow (saturation) point */
     Overflow = pow((double)2.0, (double)(bitno - 1));
@@ -392,8 +644,28 @@ int actlevel(char* FileIn, SVP56_state* sv_state)
     /* Reset variables for speech level measurements */
     init_speech_voltmeter(&state, sf);
 
+    /* check file extension */
     /* Read wave header and offset */
-    header_offset = wav_header_read(FileIn, &header);
+    name_len = strlen(FileIn);
+    if (name_len > 4)
+    {
+        if (strcmp(FileIn + name_len - 4, ".wav") == 0)
+            header_offset = wav_header_read(FileIn, &header);
+        if (strcmp(FileIn + name_len - 4, ".WAV") == 0)
+            header_offset = wav_header_read(FileIn, &header);
+        if (strcmp(FileIn + name_len - 4, ".PCM") == 0) {
+            header_offset = 0;
+            struct stat st;
+            stat(FileIn, &st);
+            header.data_bytes = st.st_size;
+        }
+        if (strcmp(FileIn + name_len - 4, ".pcm") == 0) {
+            header_offset = 0;
+            struct stat st;
+            stat(FileIn, &st);
+            header.data_bytes = st.st_size;
+        }
+    }
 
     /* ......... FILE PREPARATION ......... */
 
@@ -405,7 +677,7 @@ int actlevel(char* FileIn, SVP56_state* sv_state)
         KILL(FileIn, 2);
 
     /* Initialize number of blocks to all samples */
-    N2 = ceil(header.data_bytes / (double)(N * sizeof(short)));
+    N2 = (long) ceil(header.data_bytes / (double)(N * sizeof(short)));
 
     /* Move pointer after wave header */
     if (fseek(Fi, header_offset, 0) < 0l)
@@ -480,4 +752,4 @@ int actlevel(char* FileIn, SVP56_state* sv_state)
 
     return (0);
 #endif
-}
+        }
