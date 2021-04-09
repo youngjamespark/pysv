@@ -1219,7 +1219,7 @@ long serialize_right_justifiedstl96(short* par_buf, short* bit_stm, long n, long
       */
 
       /* Calculate size of softbits in bitstream */
-    bs_length = n * resol;
+    bs_length = (unsigned short)(n * resol);
 
     /* Initialize unsigned pointer to input (potentially signed) and output buffers */
     bs = (unsigned short*)bit_stm;
@@ -1586,7 +1586,7 @@ long serialize_left_justifiedstl96(short* par_buf, short* bit_stm, long n, long 
     if (sync) {
         /* Frame boundaries have the sync word and the number of softbits per frame */
         *bs++ = SYNC_WORD;
-        *bs++ = bs_length;
+        *bs++ = (unsigned short)bs_length;
     }
 
     /* Convert samples from left- to right-justified in input buffer */
