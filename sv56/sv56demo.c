@@ -543,17 +543,10 @@ int sv56demo(char* FileIn, char* FileOut, double targetdB)
     name_len = strlen(FileIn);
     if (name_len > 4)
     {
-        if (strcmp(FileIn + name_len - 4, ".wav") == 0)
+        if ((strcmp(FileIn + name_len - 4, ".wav") == 0) || (strcmp(FileIn + name_len - 4, ".WAV") == 0))
             header_offset = wav_header_read(FileIn, &header);
-        if (strcmp(FileIn + name_len - 4, ".WAV") == 0)
-            header_offset = wav_header_read(FileIn, &header);
-        if (strcmp(FileIn + name_len - 4, ".PCM") == 0) {
-            header_offset = 0;
-            struct stat st;
-            stat(FileIn, &st);
-            header.data_bytes = st.st_size;
-        }
-        if (strcmp(FileIn + name_len - 4, ".pcm") == 0) {
+        if ((strcmp(FileIn + name_len - 4, ".PCM") == 0) || (strcmp(FileIn + name_len - 4, ".pcm") == 0))
+        {
             header_offset = 0;
             struct stat st;
             stat(FileIn, &st);
@@ -587,7 +580,7 @@ int sv56demo(char* FileIn, char* FileOut, double targetdB)
     }
 
     /* Initialize number of blocks to all samples */
-    N2 = ceil(header.data_bytes / (double)(N * sizeof(short)));
+    N2 = (long) ceil(header.data_bytes / (double)(N * sizeof(short)));
 
     /* Move pointer to 1st block of interest */
     //if (fseek(Fi, start_byte, 0) < 0l)
@@ -694,7 +687,6 @@ int sv56demo(char* FileIn, char* FileOut, double targetdB)
                 break;
         }
     }
-
 
     /* Log number of clipped samples */
     if (NrSat != 0)
