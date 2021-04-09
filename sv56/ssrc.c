@@ -5,6 +5,7 @@
 #include <math.h>
 #include <assert.h>
 #include <time.h>
+#include <string.h>
 
 #define VERSION "1.30"
 
@@ -34,13 +35,14 @@ int FFTFIRLEN = 65536;
 double fact[M + 1];
 #endif
 
-extern void rdft(int, int, REAL *, int *, REAL *);
+extern void rdft(int, int, REAL*, int*, REAL*);
 extern double dbesi0(double);
+int ssrc(char* sfn, char* dfn, int dfrq);
 
-const int scoeffreq[] = {0, 48000, 44100, 37800, 32000, 22050, 48000, 44100};
+const int scoeffreq[] = { 0, 48000, 44100, 37800, 32000, 22050, 48000, 44100 };
 
-const int scoeflen[] = {1, 16, 20, 16, 16, 15, 16, 15};
-const int samp[] = {8, 18, 27, 8, 8, 8, 10, 9};
+const int scoeflen[] = { 1, 16, 20, 16, 16, 15, 16, 15 };
+const int samp[] = { 8, 18, 27, 8, 8, 8, 10, 9 };
 
 const double shapercoefs[8][21] = {
     {-1}, /* triangular dither */
@@ -190,9 +192,9 @@ const double shapercoefs[8][21] = {
 #endif
 };
 
-double **shapebuf;
+double** shapebuf;
 int shaper_type, shaper_len, shaper_clipmin, shaper_clipmax;
-REAL *randbuf;
+REAL* randbuf;
 int randptr;
 int quiet = 0;
 int lastshowed2;
@@ -219,7 +221,7 @@ int init_shaper(int freq, int nch, int min, int max, int dtype, int pdf, double 
 
     shaper_type = i;
 
-    shapebuf = malloc(sizeof(double *) * nch);
+    shapebuf = malloc(sizeof(double*) * nch);
     shaper_len = scoeflen[shaper_type];
 
     for (i = 0; i < nch; i++)
@@ -310,7 +312,7 @@ int init_shaper(int freq, int nch, int min, int max, int dtype, int pdf, double 
     return samp[shaper_type];
 }
 
-int do_shaping(double s, double *peak, int dtype, int ch)
+int do_shaping(double s, double* peak, int dtype, int ch)
 {
     double u, h;
     int i;
@@ -515,18 +517,18 @@ int gcd(int x, int y)
     return x;
 }
 
-double upsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int dfrq, double gain, unsigned int chanklen, int twopass, int dither)
+double upsample(FILE* fpi, FILE* fpo, int nch, int bps, int dbps, int sfrq, int dfrq, double gain, unsigned int chanklen, int twopass, int dither)
 {
     int frqgcd, osf, fs1, fs2;
-    REAL **stage1, *stage2;
+    REAL** stage1, * stage2;
     int n1, n1x, n1y, n2, n2b;
     int filter2len;
-    int *f1order, *f1inc;
-    int *fft_ip = NULL;
-    REAL *fft_w = NULL;
-    unsigned char *rawinbuf, *rawoutbuf;
-    REAL *inbuf, *outbuf;
-    REAL **buf1, **buf2;
+    int* f1order, * f1inc;
+    int* fft_ip = NULL;
+    REAL* fft_w = NULL;
+    unsigned char* rawinbuf, * rawoutbuf;
+    REAL* inbuf, * outbuf;
+    REAL** buf1, ** buf2;
     double peak = 0;
     int spcount = 0;
     int i, j;
@@ -593,7 +595,7 @@ double upsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int 
                 f1order[i] = 0;
         }
 
-        stage1 = malloc(n1y * sizeof(REAL *));
+        stage1 = malloc(n1y * sizeof(REAL*));
         stage1[0] = calloc(n1x * n1y, sizeof(REAL));
 
         for (i = 1; i < n1y; i++)
@@ -678,13 +680,13 @@ double upsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int 
         int init, ending;
         unsigned int sumread, sumwrite;
         int osc;
-        REAL *ip, *ip_backup;
+        REAL* ip, * ip_backup;
         int s1p_backup, osc_backup;
-        int k, ch, p;
+        int ch, p;
         int inbuflen;
         int delay = 0;
 
-        buf1 = malloc(nch * sizeof(REAL *));
+        buf1 = malloc(nch * sizeof(REAL*));
         for (i = 0; i < nch; i++)
         {
             buf1[i] = calloc((n2b2 / osf + 1), sizeof(REAL));
@@ -692,7 +694,7 @@ double upsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int 
                 buf1[i][j] = 0;
         }
 
-        buf2 = malloc(sizeof(REAL *) * nch);
+        buf2 = malloc(sizeof(REAL*) * nch);
         for (i = 0; i < nch; i++)
             buf2[i] = calloc(n2b, sizeof(REAL));
 
@@ -732,19 +734,19 @@ double upsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int 
             case 1:
                 for (i = 0; i < nsmplread * nch; i++)
                     inbuf[nch * inbuflen + i] =
-                        (1 / (REAL)0x7f) * ((REAL)((unsigned char *)rawinbuf)[i] - 128);
+                    (1 / (REAL)0x7f) * ((REAL)((unsigned char*)rawinbuf)[i] - 128);
                 break;
 
             case 2:
 #ifndef BIGENDIAN
                 for (i = 0; i < nsmplread * nch; i++)
-                    inbuf[nch * inbuflen + i] = (1 / (REAL)0x7fff) * (REAL)((short *)rawinbuf)[i];
+                    inbuf[nch * inbuflen + i] = (1 / (REAL)0x7fff) * (REAL)((short*)rawinbuf)[i];
 #else
                 for (i = 0; i < nsmplread * nch; i++)
                 {
                     inbuf[nch * inbuflen + i] = (1 / (REAL)0x7fff) *
-                                                (((int)rawinbuf[i * 2]) |
-                                                 (((int)((char *)rawinbuf)[i * 2 + 1]) << 8));
+                        (((int)rawinbuf[i * 2]) |
+                            (((int)((char*)rawinbuf)[i * 2 + 1]) << 8));
                 }
 #endif
                 break;
@@ -753,9 +755,9 @@ double upsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int 
                 for (i = 0; i < nsmplread * nch; i++)
                 {
                     inbuf[nch * inbuflen + i] = (1 / (REAL)0x7fffff) *
-                                                ((((int)rawinbuf[i * 3]) << 0) |
-                                                 (((int)rawinbuf[i * 3 + 1]) << 8) |
-                                                 (((int)((char *)rawinbuf)[i * 3 + 2]) << 16));
+                        ((((int)rawinbuf[i * 3]) << 0) |
+                            (((int)rawinbuf[i * 3 + 1]) << 8) |
+                            (((int)((char*)rawinbuf)[i * 3 + 2]) << 16));
                 }
                 break;
 
@@ -763,10 +765,10 @@ double upsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int 
                 for (i = 0; i < nsmplread * nch; i++)
                 {
                     inbuf[nch * inbuflen + i] = (1 / (REAL)0x7fffffff) *
-                                                ((((int)rawinbuf[i * 4]) << 0) |
-                                                 (((int)rawinbuf[i * 4 + 1]) << 8) |
-                                                 (((int)rawinbuf[i * 4 + 2]) << 16) |
-                                                 (((int)((char *)rawinbuf)[i * 4 + 3]) << 24));
+                        ((((int)rawinbuf[i * 4]) << 0) |
+                            (((int)rawinbuf[i * 4 + 1]) << 8) |
+                            (((int)rawinbuf[i * 4 + 2]) << 16) |
+                            (((int)((char*)rawinbuf)[i * 4 + 3]) << 24));
                 }
                 break;
             }
@@ -794,7 +796,7 @@ double upsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int 
 
             for (ch = 0; ch < nch; ch++)
             {
-                REAL *op = &outbuf[ch];
+                REAL* op = &outbuf[ch];
                 int fdo = fs1 / (dfrq * osf), no = n1y * osf;
 
                 s1p = s1p_backup;
@@ -852,7 +854,7 @@ double upsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int 
                     for (p = 0; p < nsmplwrt1; p++)
                     {
                         REAL tmp = 0;
-                        REAL *ip2 = ip;
+                        REAL* ip2 = ip;
 
                         int s1o = f1order[s1p];
 
@@ -923,7 +925,7 @@ double upsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int 
                 {
                     REAL f = outbuf[i] > 0 ? outbuf[i] : -outbuf[i];
                     peak = peak < f ? f : peak;
-                    ((REAL *)rawoutbuf)[i] = outbuf[i];
+                    ((REAL*)rawoutbuf)[i] = outbuf[i];
                 }
             }
             else
@@ -961,7 +963,7 @@ double upsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int 
                             }
                         }
 
-                        ((unsigned char *)rawoutbuf)[i] = s + 0x80;
+                        ((unsigned char*)rawoutbuf)[i] = s + 0x80;
 
                         ch++;
                         if (ch == nch)
@@ -1002,11 +1004,11 @@ double upsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int 
                         }
 
 #ifndef BIGENDIAN
-                        ((short *)rawoutbuf)[i] = s;
+                        ((short*)rawoutbuf)[i] = s;
 #else
-                        ((char *)rawoutbuf)[i * 2] = s & 255;
+                        ((char*)rawoutbuf)[i * 2] = s & 255;
                         s >>= 8;
-                        ((char *)rawoutbuf)[i * 2 + 1] = s & 255;
+                        ((char*)rawoutbuf)[i * 2 + 1] = s & 255;
 #endif
                         ch++;
                         if (ch == nch)
@@ -1046,11 +1048,11 @@ double upsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int 
                             }
                         }
 
-                        ((char *)rawoutbuf)[i * 3] = s & 255;
+                        ((char*)rawoutbuf)[i * 3] = s & 255;
                         s >>= 8;
-                        ((char *)rawoutbuf)[i * 3 + 1] = s & 255;
+                        ((char*)rawoutbuf)[i * 3 + 1] = s & 255;
                         s >>= 8;
-                        ((char *)rawoutbuf)[i * 3 + 2] = s & 255;
+                        ((char*)rawoutbuf)[i * 3 + 2] = s & 255;
 
                         ch++;
                         if (ch == nch)
@@ -1137,7 +1139,6 @@ double upsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int 
             }
             else
             {
-                int pos, len;
                 if (nsmplwrt2 < delay)
                 {
                     delay -= nsmplwrt2;
@@ -1217,18 +1218,18 @@ double upsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int 
     return peak;
 }
 
-double downsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, int dfrq, double gain, unsigned int chanklen, int twopass, int dither)
+double downsample(FILE* fpi, FILE* fpo, int nch, int bps, int dbps, int sfrq, int dfrq, double gain, unsigned int chanklen, int twopass, int dither)
 {
     int frqgcd, osf, fs1, fs2;
-    REAL *stage1, **stage2;
+    REAL* stage1, ** stage2;
     int n2, n2x, n2y, n1, n1b;
     int filter1len;
-    int *f2order, *f2inc;
-    int *fft_ip = NULL;
-    REAL *fft_w = NULL;
-    unsigned char *rawinbuf, *rawoutbuf;
-    REAL *inbuf, *outbuf;
-    REAL **buf1, **buf2;
+    int* f2order, * f2inc;
+    int* fft_ip = NULL;
+    REAL* fft_w = NULL;
+    unsigned char* rawinbuf, * rawoutbuf;
+    REAL* inbuf, * outbuf;
+    REAL** buf1, ** buf2;
     int i, j;
     int spcount = 0;
     double peak = 0;
@@ -1315,7 +1316,7 @@ double downsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, in
         f2order[0] = 0;
         f2inc = calloc(n2y, sizeof(int));
         f2inc[0] = sfrq / dfrq;
-        stage2 = malloc(sizeof(REAL *) * n2y);
+        stage2 = malloc(sizeof(REAL*) * n2y);
         stage2[0] = calloc(n2x * n2y, sizeof(REAL));
         stage2[0][0] = 1;
     }
@@ -1362,7 +1363,7 @@ double downsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, in
                 f2inc[i]--;
         }
 
-        stage2 = malloc(sizeof(REAL *) * n2y);
+        stage2 = malloc(sizeof(REAL*) * n2y);
         stage2[0] = calloc(n2x * n2y, sizeof(REAL));
 
         for (i = 1; i < n2y; i++)
@@ -1388,20 +1389,18 @@ double downsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, in
         int rps;       // rpを(fs1/sfrq=osf)で割った余り
         int rp2;       // buf2のfs2での次に読むサンプルの場所を保持
         int ds;        // 次にdisposeするsfrqでのサンプル数
-        int nsmplwrt1; // 実際にファイルからinbufに読み込まれた値から計算した
-                       // stage2 filterに渡されるサンプル数
         int nsmplwrt2; // 実際にファイルからinbufに読み込まれた値から計算した
                        // stage2 filterに渡されるサンプル数
         int s2p;       // stage1 filterから出力されたサンプルの数をn1y*osfで割った余り
         int init, ending;
         int osc;
-        REAL *bp, *bp_backup; // rp2から計算される．buf2の次に読むサンプルの位置
-        int rps_backup, s2p_backup, osc_backup;
+        REAL* bp; // rp2から計算される．buf2の次に読むサンプルの位置
+        int rps_backup, s2p_backup;
         int k, ch, p;
         int inbuflen = 0;
         unsigned int sumread, sumwrite;
         int delay = 0;
-        REAL *op;
+        REAL* op;
 
         //    |....B....|....C....|   buf1      n1b2+n1b2
         //|.A.|....D....|             buf2  n2x+n1b2
@@ -1414,11 +1413,11 @@ double downsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, in
         // Dの後ろをAに移動
         // CをDにコピー
 
-        buf1 = malloc(sizeof(REAL *) * nch);
+        buf1 = malloc(sizeof(REAL*) * nch);
         for (i = 0; i < nch; i++)
             buf1[i] = calloc(sizeof(REAL), n1b);
 
-        buf2 = malloc(sizeof(REAL *) * nch);
+        buf2 = malloc(sizeof(REAL*) * nch);
         for (i = 0; i < nch; i++)
         {
             buf2[i] = calloc(n2x + 1 + n1b2, sizeof(REAL));
@@ -1465,19 +1464,19 @@ double downsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, in
             case 1:
                 for (i = 0; i < nsmplread * nch; i++)
                     inbuf[nch * inbuflen + i] =
-                        (1 / (REAL)0x7f) * ((REAL)((unsigned char *)rawinbuf)[i] - 128);
+                    (1 / (REAL)0x7f) * ((REAL)((unsigned char*)rawinbuf)[i] - 128);
                 break;
 
             case 2:
 #ifndef BIGENDIAN
                 for (i = 0; i < nsmplread * nch; i++)
-                    inbuf[nch * inbuflen + i] = (1 / (REAL)0x7fff) * (REAL)((short *)rawinbuf)[i];
+                    inbuf[nch * inbuflen + i] = (1 / (REAL)0x7fff) * (REAL)((short*)rawinbuf)[i];
 #else
                 for (i = 0; i < nsmplread * nch; i++)
                 {
                     inbuf[nch * inbuflen + i] = (1 / (REAL)0x7fff) *
-                                                (((int)rawinbuf[i * 2]) |
-                                                 (((int)((char *)rawinbuf)[i * 2 + 1]) << 8));
+                        (((int)rawinbuf[i * 2]) |
+                            (((int)((char*)rawinbuf)[i * 2 + 1]) << 8));
                 }
 #endif
                 break;
@@ -1486,9 +1485,9 @@ double downsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, in
                 for (i = 0; i < nsmplread * nch; i++)
                 {
                     inbuf[nch * inbuflen + i] = (1 / (REAL)0x7fffff) *
-                                                ((((int)rawinbuf[i * 3]) << 0) |
-                                                 (((int)rawinbuf[i * 3 + 1]) << 8) |
-                                                 (((int)((char *)rawinbuf)[i * 3 + 2]) << 16));
+                        ((((int)rawinbuf[i * 3]) << 0) |
+                            (((int)rawinbuf[i * 3 + 1]) << 8) |
+                            (((int)((char*)rawinbuf)[i * 3 + 2]) << 16));
                 }
                 break;
 
@@ -1496,10 +1495,10 @@ double downsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, in
                 for (i = 0; i < nsmplread * nch; i++)
                 {
                     inbuf[nch * inbuflen + i] = (1 / (REAL)0x7fffffff) *
-                                                ((((int)rawinbuf[i * 4]) << 0) |
-                                                 (((int)rawinbuf[i * 4 + 1]) << 8) |
-                                                 (((int)rawinbuf[i * 4 + 2]) << 16) |
-                                                 (((int)((char *)rawinbuf)[i * 4 + 3]) << 24));
+                        ((((int)rawinbuf[i * 4]) << 0) |
+                            (((int)rawinbuf[i * 4 + 1]) << 8) |
+                            (((int)rawinbuf[i * 4 + 2]) << 16) |
+                            (((int)((char*)rawinbuf)[i * 4 + 3]) << 24));
                 }
                 break;
             }
@@ -1575,8 +1574,7 @@ double downsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, in
                 for (p = 0; bp - buf2[ch] < n1b2 + 1; p++)
                 {
                     REAL tmp = 0;
-                    REAL *bp2;
-                    int s;
+                    REAL* bp2;
                     int s2o;
 
                     bp2 = bp;
@@ -1606,7 +1604,7 @@ double downsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, in
                 {
                     REAL f = outbuf[i] > 0 ? outbuf[i] : -outbuf[i];
                     peak = peak < f ? f : peak;
-                    ((REAL *)rawoutbuf)[i] = outbuf[i];
+                    ((REAL*)rawoutbuf)[i] = outbuf[i];
                 }
             }
             else
@@ -1644,7 +1642,7 @@ double downsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, in
                             }
                         }
 
-                        ((unsigned char *)rawoutbuf)[i] = s + 0x80;
+                        ((unsigned char*)rawoutbuf)[i] = s + 0x80;
 
                         ch++;
                         if (ch == nch)
@@ -1685,11 +1683,11 @@ double downsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, in
                         }
 
 #ifndef BIGENDIAN
-                        ((short *)rawoutbuf)[i] = s;
+                        ((short*)rawoutbuf)[i] = s;
 #else
-                        ((char *)rawoutbuf)[i * 2] = s & 255;
+                        ((char*)rawoutbuf)[i * 2] = s & 255;
                         s >>= 8;
-                        ((char *)rawoutbuf)[i * 2 + 1] = s & 255;
+                        ((char*)rawoutbuf)[i * 2 + 1] = s & 255;
 #endif
 
                         ch++;
@@ -1730,11 +1728,11 @@ double downsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, in
                             }
                         }
 
-                        ((char *)rawoutbuf)[i * 3] = s & 255;
+                        ((char*)rawoutbuf)[i * 3] = s & 255;
                         s >>= 8;
-                        ((char *)rawoutbuf)[i * 3 + 1] = s & 255;
+                        ((char*)rawoutbuf)[i * 3 + 1] = s & 255;
                         s >>= 8;
-                        ((char *)rawoutbuf)[i * 3 + 2] = s & 255;
+                        ((char*)rawoutbuf)[i * 3 + 2] = s & 255;
 
                         ch++;
                         if (ch == nch)
@@ -1810,7 +1808,6 @@ double downsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, in
             }
             else
             {
-                int pos, len;
                 if (nsmplwrt2 < delay)
                 {
                     delay -= nsmplwrt2;
@@ -1882,7 +1879,7 @@ double downsample(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, int sfrq, in
     return peak;
 }
 
-double no_src(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, double gain, int chanklen, int twopass, int dither)
+double no_src(FILE* fpi, FILE* fpo, int nch, int bps, int dbps, double gain, int chanklen, int twopass, int dither)
 {
     double peak = 0;
     int ch = 0, sumread = 0;
@@ -1899,30 +1896,30 @@ double no_src(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, double gain, int
         {
         case 1:
             fread(buf, 1, 1, fpi);
-            f = (1 / (REAL)0x7f) * ((REAL)((unsigned char *)buf)[0] - 128);
+            f = (1 / (REAL)0x7f) * ((REAL)((unsigned char*)buf)[0] - 128);
             break;
         case 2:
             fread(buf, 2, 1, fpi);
 #ifndef BIGENDIAN
-            f = (1 / (REAL)0x7fff) * ((REAL)((short *)buf)[0]);
+            f = (1 / (REAL)0x7fff) * ((REAL)((short*)buf)[0]);
 #else
-            f = (1 / (REAL)0x7fff) * (((int)buf[0]) | (((int)(((char *)buf)[1])) << 8));
+            f = (1 / (REAL)0x7fff) * (((int)buf[0]) | (((int)(((char*)buf)[1])) << 8));
 #endif
             break;
         case 3:
             fread(buf, 3, 1, fpi);
             f = (1 / (REAL)0x7fffff) *
                 ((((int)buf[0]) << 0) |
-                 (((int)buf[1]) << 8) |
-                 (((int)((char *)buf)[2]) << 16));
+                    (((int)buf[1]) << 8) |
+                    (((int)((char*)buf)[2]) << 16));
             break;
         case 4:
             fread(buf, 4, 1, fpi);
             f = (1 / (REAL)0x7fffffff) *
                 ((((int)buf[0]) << 0) |
-                 (((int)buf[1]) << 8) |
-                 (((int)buf[2]) << 16) |
-                 (((int)((char *)buf)[3]) << 24));
+                    (((int)buf[1]) << 8) |
+                    (((int)buf[2]) << 16) |
+                    (((int)((char*)buf)[3]) << 24));
             break;
         };
 
@@ -1992,54 +1989,39 @@ double no_src(FILE *fpi, FILE *fpo, int nch, int bps, int dbps, double gain, int
     return peak;
 }
 
-int extract_int(unsigned char *buf)
+int extract_int(unsigned char* buf)
 {
 #ifndef BIGENDIAN
-    return *(int *)buf;
+    return *(int*)buf;
 #else
     return ((int)buf[0]) | (((int)buf[1]) << 8) |
-           (((int)buf[2]) << 16) | (((int)((char *)buf)[3]) << 24);
+        (((int)buf[2]) << 16) | (((int)((char*)buf)[3]) << 24);
 #endif
 }
 
-unsigned int extract_uint(unsigned char *buf)
+unsigned int extract_uint(unsigned char* buf)
 {
 #ifndef BIGENDIAN
-    return *(int *)buf;
+    return *(int*)buf;
 #else
     return ((unsigned int)buf[0]) | (((unsigned int)buf[1]) << 8) |
-           (((unsigned int)buf[2]) << 16) | (((unsigned int)((char *)buf)[3]) << 24);
+        (((unsigned int)buf[2]) << 16) | (((unsigned int)((char*)buf)[3]) << 24);
 #endif
 }
 
-short extract_short(unsigned char *buf)
+short extract_short(unsigned char* buf)
 {
 #ifndef BIGENDIAN
-    return *(short *)buf;
+    return *(short*)buf;
 #else
-    return ((short)buf[0]) | (((short)((char *)buf)[1]) << 8);
+    return ((short)buf[0]) | (((short)((char*)buf)[1]) << 8);
 #endif
 }
 
-void bury_int(unsigned char *buf, int i)
+void bury_int(unsigned char* buf, int i)
 {
 #ifndef BIGENDIAN
-    *(int *)buf = i;
-#else
-    buf[0] = i & 0xff;
-    i >>= 8;
-    buf[1] = i & 0xff;
-    i >>= 8;
-    buf[2] = i & 0xff;
-    i >>= 8;
-    buf[3] = i & 0xff;
-#endif
-}
-
-void bury_uint(unsigned char *buf, unsigned int i)
-{
-#ifndef BIGENDIAN
-    *(int *)buf = i;
+    * (int*)buf = i;
 #else
     buf[0] = i & 0xff;
     i >>= 8;
@@ -2051,10 +2033,25 @@ void bury_uint(unsigned char *buf, unsigned int i)
 #endif
 }
 
-void bury_short(unsigned char *buf, short s)
+void bury_uint(unsigned char* buf, unsigned int i)
 {
 #ifndef BIGENDIAN
-    *(short *)buf = s;
+    * (int*)buf = i;
+#else
+    buf[0] = i & 0xff;
+    i >>= 8;
+    buf[1] = i & 0xff;
+    i >>= 8;
+    buf[2] = i & 0xff;
+    i >>= 8;
+    buf[3] = i & 0xff;
+#endif
+}
+
+void bury_short(unsigned char* buf, short s)
+{
+#ifndef BIGENDIAN
+    * (short*)buf = s;
 #else
     buf[0] = s & 0xff;
     s >>= 8;
@@ -2062,7 +2059,7 @@ void bury_short(unsigned char *buf, short s)
 #endif
 }
 
-int fread_int(FILE *fp)
+int fread_int(FILE* fp)
 {
 #ifndef BIGENDIAN
     int ret;
@@ -2076,7 +2073,7 @@ int fread_int(FILE *fp)
 #endif
 }
 
-unsigned int fread_uint(FILE *fp)
+unsigned int fread_uint(FILE* fp)
 {
 #ifndef BIGENDIAN
     unsigned int ret;
@@ -2090,7 +2087,7 @@ unsigned int fread_uint(FILE *fp)
 #endif
 }
 
-int fread_short(FILE *fp)
+int fread_short(FILE* fp)
 {
 #ifndef BIGENDIAN
     short ret;
@@ -2103,7 +2100,7 @@ int fread_short(FILE *fp)
 #endif
 }
 
-void fwrite_int(FILE *fp, int i)
+void fwrite_int(FILE* fp, int i)
 {
 #ifndef BIGENDIAN
     fwrite(&i, 4, 1, fp);
@@ -2114,7 +2111,7 @@ void fwrite_int(FILE *fp, int i)
 #endif
 }
 
-void fwrite_uint(FILE *fp, unsigned int i)
+void fwrite_uint(FILE* fp, unsigned int i)
 {
 #ifndef BIGENDIAN
     fwrite(&i, 4, 1, fp);
@@ -2125,7 +2122,7 @@ void fwrite_uint(FILE *fp, unsigned int i)
 #endif
 }
 
-void fwrite_short(FILE *fp, short s)
+void fwrite_short(FILE* fp, short s)
 {
 #ifndef BIGENDIAN
     fwrite(&s, 2, 1, fp);
@@ -2136,17 +2133,14 @@ void fwrite_short(FILE *fp, short s)
 #endif
 }
 
-#if 0
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-    char *sfn, *dfn, *tmpfn = NULL;
-    FILE *fpi, *fpo, *fpt = NULL;
-    int twopass, normalize, dither, pdf, samp;
-    int nch, bps;
-    unsigned int length;
-    int sfrq, dfrq, dbps;
-    double att, peak, noiseamp;
-    int i, j;
+    char* sfn, * dfn, * tmpfn = NULL;
+    FILE* fpt = NULL;
+    int twopass, normalize, dither, pdf;
+    int dfrq, dbps;
+    double att, noiseamp;
+    int i;
 
     // parse command line options
 
@@ -2203,7 +2197,7 @@ int main(int argc, char **argv)
 
         if (strcmp(argv[i], "--dither") == 0)
         {
-            char *endptr;
+            char* endptr;
             dither = strtol(argv[i + 1], &endptr, 10);
             if (*endptr == '\0')
             {
@@ -2221,7 +2215,7 @@ int main(int argc, char **argv)
 
         if (strcmp(argv[i], "--pdf") == 0)
         {
-            char *endptr;
+            char* endptr;
             pdf = strtol(argv[i + 1], &endptr, 10);
             if (*endptr == '\0')
             {
@@ -2245,7 +2239,7 @@ int main(int argc, char **argv)
             }
             else
             {
-                static double presets[] = {0.7, 0.9, 0.18};
+                static double presets[] = { 0.7, 0.9, 0.18 };
                 noiseamp = presets[pdf];
             }
 
@@ -2308,18 +2302,16 @@ int main(int argc, char **argv)
 
     ssrc(sfn, dfn, dfrq);
 }
-#endif // main()
 
-int ssrc(char *sfn, char *dfn, int dfrq)
+int ssrc(char* sfn, char* dfn, int dfrq)
 {
-    char *tmpfn = NULL;
-    FILE *fpi, *fpo, *fpt = NULL;
+    char* tmpfn = NULL;
+    FILE* fpi, * fpo, * fpt = NULL;
     int twopass, normalize, dither, pdf, samp;
     int nch, bps;
     unsigned int length;
     int sfrq, dbps;
     double att, peak, noiseamp;
-    int i, j;
 
     // parse command line options
 
@@ -2331,7 +2323,7 @@ int ssrc(char *sfn, char *dfn, int dfrq)
     dither = 0;
     pdf = 0;
     noiseamp = 0.18;
-    quiet = 1; // suppress verbose
+    quiet = 1;          // suppress verbose
 
     /* check file type */
     int name_len;
@@ -2340,13 +2332,9 @@ int ssrc(char *sfn, char *dfn, int dfrq)
     name_len = strlen(dfn);
     if (name_len > 4)
     {
-        if (strcmp(dfn + name_len - 4, ".wav") == 0)
+        if ((strcmp(dfn + name_len - 4, ".wav") == 0) || (strcmp(dfn + name_len - 4, ".WAV") == 0))
             wav_flag = 1;
-        if (strcmp(dfn + name_len - 4, ".WAV") == 0)
-            wav_flag = 1;
-        if (strcmp(dfn + name_len - 4, ".raw") == 0)
-            wav_flag = 0;
-        if (strcmp(dfn + name_len - 4, ".pcm") == 0)
+        if ((strcmp(dfn + name_len - 4, ".raw") == 0) || (strcmp(dfn + name_len - 4, ".pcm") == 0))
             wav_flag = 0;
     }
 
@@ -2361,7 +2349,6 @@ int ssrc(char *sfn, char *dfn, int dfrq)
     /* read wav header */
     {
         unsigned char ibuf[576 * 2 * 2];
-        short word;
         int dword;
 
         if (getc(fpi) != 'R')
@@ -2465,10 +2452,10 @@ int ssrc(char *sfn, char *dfn, int dfrq)
 
     if (!quiet)
     {
-        const char *dtype[] = {
-            "none", "no noise shaping", "triangular spectral shape", "ATH based noise shaping", "ATH based noise shaping(less amplitude)"};
-        const char *ptype[] = {
-            "rectangular", "triangular", "gaussian"};
+        const char* dtype[] = {
+            "none", "no noise shaping", "triangular spectral shape", "ATH based noise shaping", "ATH based noise shaping(less amplitude)" };
+        const char* ptype[] = {
+            "rectangular", "triangular", "gaussian" };
         printf("frequency : %d -> %d\n", sfrq, dfrq);
         printf("attenuation : %gdB\n", att);
         printf("bits per sample : %d -> %d\n", bps * 8, dbps * 8);
@@ -2778,7 +2765,6 @@ int ssrc(char *sfn, char *dfn, int dfrq)
     }
 
     {
-        short word;
         int dword;
         int len;
 
