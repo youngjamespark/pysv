@@ -355,7 +355,7 @@ double speech_voltmeter(float* buffer, long smpno, SVP56_state* state) {
 
 
     /* Some initializations */
-    I = floor(H * state->f + 0.5);
+    I = (int) floor(H * state->f + 0.5);
     g = exp(-1.0 / (state->f * T));
 
     /* Calculates statistics for all given data points */
