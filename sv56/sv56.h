@@ -1,5 +1,6 @@
 #ifndef __SV56_H__
 #define __SV56_H__
+
 #include "sv-p56.h"
 #include <stdio.h>
 
@@ -24,9 +25,21 @@ typedef struct wav_header {
     // uint8_t bytes[];             // Remainder of wave file is bytes
 } wav_header;
 
+typedef float REAL;
+
 int wav_header_read(char* FileIn, wav_header* header);
-int actlevel(char* FileIn, SVP56_state* sv_state);
-int sv56demo(char* FileIn, char* FileOut, double targetdB);
 int ssrc(char* sfn, char* dfn, int dfrq);
 
+#ifdef __cplusplus
+extern "C"
+{
 #endif
+    int actlevel(char* FileIn, SVP56_state* sv_state);
+    int sv56demo(char* FileIn, char* FileOut, double targetdB);
+    double dbesi0(double x);
+    void rdft(int, int, REAL *, int *, REAL *);
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+
+#endif // __SV56_H__
