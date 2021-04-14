@@ -1,6 +1,7 @@
 /* Bessel I_0(x) function in double precision */
 
 #include <math.h>
+#include "sv56.h"
 
 double dbesi0(double x)
 {
