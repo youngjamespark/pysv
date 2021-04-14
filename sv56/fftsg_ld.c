@@ -289,6 +289,8 @@ Appendix :
 #include <stdlib.h>
 #include <math.h>
 
+#include "sv56.h"
+
 #ifdef REAL_IS_FLOAT
 typedef float REAL;
 
