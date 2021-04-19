@@ -2355,8 +2355,8 @@ int ssrc(char *sfn, char *dfn, int dfrq)
 
     infile = UTF8ToANSI(sfn);
     outfile = UTF8ToANSI(dfn);
-    printf("infile = %s\n", infile);
-    printf("outfile = %s\n", outfile);
+    // printf("infile = %s\n", infile);
+    // printf("outfile = %s\n", outfile);
 
     name_len = strlen(outfile);
     if (name_len > 4)
